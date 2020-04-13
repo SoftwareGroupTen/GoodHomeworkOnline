@@ -11,9 +11,25 @@
     <form action = "" method = "POST">
     {% csrf_token %}
     {{ ERROR }}
+	<!--
     <input type = "text" name = "用户名" placeholder = "用户名">
     <input type = "password" name = "密码" placeholder = "密码">
     <button type = "submit">登录</button>
+	 -->
+		<p>
+		 <label for = "username">账号：</label>
+		  <input type = "text" name = "用户名" placeholder = "用户名">
+		 <br>
+		 <label for ="password">密码：</label>
+		  <input type = "password" name = "密码" placeholder = "密码">
+		 <br>
+		 <label for = "identity">身份:</label>
+		  <input type = "radio" name = "身份" value = "student">学生
+		  <input type = "radio" name = "身份" value = "assitant">助教
+		  <input type = "radio" name = "身份" value = "teacher">老师
+		 <br>
+		 <button type = "submit" class = "btn btn-primary">登录</button>
+		</p>
 </form>
 </body>
 </html>
