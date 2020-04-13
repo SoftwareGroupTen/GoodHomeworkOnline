@@ -52,7 +52,12 @@
         </p>
         <p>
             <label for="id_身份">身份:</label> 
+			<!--文本框选择身份
             <input type="text" name="身份" maxlength="2" required id="id_身份">
+			 -->
+			<input type="radio" name="身份" value="student">学生
+			<input type="radio" name="身份" value="assitant">助教
+			<input type="radio" name="身份" value="teacher">老师
         </p>
             <button type="submit">注册</button>
     </form>
