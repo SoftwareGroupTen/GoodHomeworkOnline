@@ -1,0 +1,210 @@
+<!-- extends表明此页面继承自 baseHome.html 文件 -->
+{% extends "baseHome.html" %}
+{% load staticfiles %}
+
+<!-- 写入 baseHome.html 中定义的 title -->
+{% block title %}
+    课程详情
+{% endblock title %}
+
+<!--加入滚动条-->
+<div style="position:absolute; height:400px; overflow:auto">
+</div>
+
+{% block head %}
+    <link href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock head %}
+
+{% block style %}
+    <style type="text/css">
+        body{
+            font-size: 16px;
+        }
+        .form{
+            background: rgba(255,255,255,0.2);
+            width: 400px;
+            margin: 100px auto;
+        }
+        #login_form{
+            display: block;
+        }
+        .fa{
+            display: inline-block;
+            top: 30px;
+            left: 6px;
+            position: relative;
+            color: #ccc;
+        }
+        input[type="text"],input[type="password"]{
+            padding-left: 30px;
+        }
+    </style>
+{% endblock style %}
+
+<!-- 写入 baseHome.html 中定义的 content -->
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% if user.is_authenticated %}
+                <!--<a href = "{% url 'Login:logOut' %}">登出</a>-->
+                <!--
+                    <div class="col-8 alert alert-success">当前用户:{{ user.username }}当前用户身份:{{ request.session.role }}</div>
+                -->
+                
+              
+                <div class="col-4 alert alert-success">课程名称：{{mycourse.courseName}}</div>
+                <div class="col-4 alert alert-success">授课教师：{{mycourse.teacherName}}</div>
+                {% if request.session.role == '老师' %}
+                    <a href="{% url 'HomeworkPublish:Homework_Publish' mycourse.id  %}" class="btn btn-primary">发布作业</a>
+                    <a href="{% url 'Login:addassistant' mycourse.id  %}" class="btn btn-primary">为此课程添加助教</a>
+                    <a href="#" onclick="confirm_delete()" class="btn btn-primary">删除此课程</a>
+                    <script>
+                        function confirm_delete() {
+                            layer.open({
+                                title: "来自本网页的提示",
+                                content: "确认删除此课程吗？",
+                                yes: function(index, layero) {
+                                    location.href="{% url 'Login:coursedelete' mycourse.id %}"
+                                },
+                            })
+                        }
+                    </script>            
+                {% endif %}
+                {% if request.session.role == '学生' %}
+                    <a href="{% url 'Login:checkcomments' mycourse.id  %}" class="btn btn-primary">查看成绩</a>
+                    <a href="#" onclick="confirm_delete()" class="btn btn-primary">退出此课程</a>
+                    <script>
+                        function confirm_delete() {
+                            layer.open({
+                                title: "来自本网页的提示",
+                                content: "确认退出此课程吗？",
+                                yes: function(index, layero) {
+                                    location.href="{% url 'Login:courserejust' mycourse.id %}"
+                                },
+                            })
+                        }
+                    </script>           
+                {% endif %}
+                <div><br></div>
+                <div class="col-3 alert alert-warning">参课学生：</div>
+                {% for s in sc %}
+                    <p style="color:rgb(14, 15, 17)" ><a href='../../persondetail?user={{s.studentName}}'>{{s.studentName}}</a></p>
+                {% endfor %}
+                
+                <div><br></div>
+                <div class="col-3 alert alert-warning">作业列表</div>
+                <!-- 定义放置作业列表的div容器 -->
+                <div class="container">
+                    <div class="row mt-2">
+                        {% for Homework in hw %}
+                        
+                            <!-- 卡片容器 -->
+                            <div class="card h-100">
+                                
+                                <!-- 摘要 -->
+                                <div class="card-body">
+                                    <p class="card-text">作业标题：{{ Homework.Homework_title|slice:'100' }}...</p>
+                                    <p class="card-text">发布时间：{{ Homework.Pub_time }}</p>
+                                    <p class="card-text">截止时间：{{ Homework.deadline_date}} {{ Homework.deadline_time}}</p>
+                                </div>
+                                
+                                <!-- 注脚 -->
+                                <div class="card-footer">
+                                    <a href ="{% url 'Login:homeworkdetail' Homework.id %}" class="btn btn-primary">详情</a>
+                                    <!--
+                                    {% if request.session.role == '学生' %}
+                                        <a href ="{% url 'Login:upload' Homework.id %}" class="btn btn-primary">提交此作业</a>
+                                    {% endif %}
+                                    -->
+                                </div>
+                                <p>                                
+                                
+                                
+                                </p>
+                            
+                            
+                        </div>
+                        {% endfor %}
+                        
+                        
+
+                    </div>
+                </div>
+                <!--
+                <p>作业列表：</p>
+                {% for Homework in hw %}
+                    <p>
+                    作业内容：{{ Homework.Homework_text}}   发布时间：{{ Homework.Pub_time }} 截止时间：{{ Homework.deadline_date}} {{ Homework.deadline_time}}
+                    <a href ="{% url 'Login:homeworkdetail' Homework.id %}">详情</a>
+                    {% if request.session.role == '学生' %}
+                    <a href ="{% url 'Login:upload' Homework.id %}">提交此作业</a>
+                    {% endif %}
+                    {% if request.session.role == '老师' %}
+                    <a href ="{% url 'HomeworkPublish:Homework_delete' Homework.id %}">删除此作业</a>
+                    {% endif %}
+
+                    </p>
+                {% endfor %}
+                -->
+                
+
+                
+                {% else %}
+                <form action = "" method = "POST">
+                    {% csrf_token %}
+                    {{ ERROR }}
+                    <div class="container">
+                        <div class="form row">
+                                <div class="col-md-12">
+                                        <h3 style="text-align: center;">Login to your account</h3>
+                                        <!-- 账号 -->
+                                        <div class="form-group">
+                                            <i class="fa fa-user fa-lg"></i>
+                                            <input class="form-control required" type="text" placeholder="请输入用户名" name="username" autofocus="autofocus">
+                                        </div>
+                                        
+                                        <!-- 密码 -->
+                                        <div class="form-group">
+                                            <i class="fa fa-lock fa-lg"></i>
+                                            <input class="form-control required" type="password" placeholder="请输入密码" name="password">
+                                        </div>
+                                        
+                                        <!-- 验证码 -->
+                                        <div class="form-group">
+                                            {{ loginform.VerificationCode }}
+                                            {{ loginform.errors.VerificationCode }}
+                                        </div>
+                                                            
+                                        <!-- 提交按钮 -->
+                                        <div class="form-group">
+                                            <button type = "submit" class = "btn btn-primary btn-block btn-success">登录</button>   
+                                        </div>
+                                        <div class="form-group">
+                                            <a href="{% url 'Login:Register' %}" role="button" class="btn btn-link pull-right " class="img-circle" style="font-size: large;">No account?</a>
+                                        </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+                <br><br><br><br>
+
+        </div>
+    </div>  
+</div>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <script type="text/javascript">
+        function feedback() {
+            layer.open({
+                title: "来自本网页的提示",
+                content: "已删除此作业",
+            })
+        }
+        window.onload = feedback;
+    </script>
+    {% endfor %}                    
+{% endif %}
+{% endblock content %}

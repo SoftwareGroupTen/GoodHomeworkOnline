@@ -1,0 +1,186 @@
+<!-- extends表明此页面继承自 baseHome.html 文件 -->
+{% extends "baseHome.html" %}
+{% load staticfiles %}
+
+<!-- 写入 baseHome.html 中定义的 title -->
+{% block title %}
+    添加课程
+{% endblock title %}
+
+<!--加入滚动条-->
+<div style="position:absolute; height:400px; overflow:auto">
+</div>
+
+{% block head %}
+    <link href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock head %}
+
+{% block style %}
+    <style type="text/css">
+        body{
+            font-size: 16px;
+        }
+        .form{
+            background: rgba(255,255,255,0.2);
+            width: 400px;
+            margin: 100px auto;
+        }
+        #login_form{
+            display: block;
+        }
+        .fa{
+            display: inline-block;
+            top: 30px;
+            left: 6px;
+            position: relative;
+            color: #ccc;
+        }
+        input[type="text"],input[type="password"]{
+            padding-left: 30px;
+        }
+    </style>
+{% endblock style %}
+
+<!-- 写入 baseHome.html 中定义的 content -->
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+        <h1>主页</h1>
+        {% if user.is_authenticated %}
+            <div class="col-4 alert alert-warning">您正在加入课程……</div>
+        
+
+        <div class="row">
+            <div class="col-auto mr-auto">
+                <form class="form-inline" >
+                    <input type="text" 
+                        class="form-control mb-2 mr-sm-2" 
+                        name="search" 
+                        placeholder="搜索..." 
+                        required
+                    >
+                </form>
+            </div>
+        </div>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                <script type="text/javascript">
+                    function feedback() {
+                        layer.open({
+                            title: "来自本网页的提示",
+                            content: "加入成功",
+                            end : function() {
+                                location.href='{% url "Login:PAGE"  %}'
+                            },
+                        })
+                    }
+                    window.onload = feedback;
+                </script>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <script type="text/javascript">
+                    function feedback() {
+                        layer.open({
+                            title: "来自本网页的提示",
+                            content: "您已添加过此课程",
+                            end : function() {
+                                location.href=document.referrer
+                            },
+                        })
+                    }
+                    window.onload = feedback;
+                </script>
+            {% endif %}
+            {% endfor %} 
+        </ul>
+        {% endif %}
+        {% if search %}
+        {% if target %}
+            <div class="col-3 alert alert-success"><span style="color: red">"{{ search }}"</span>的搜索结果如下：</div>
+            <!--
+                <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+            -->
+            
+            <ul>
+                {% for targetfile in target %} 
+                    <!-- 文章内容 -->
+                    <div class="col-4 mb-4">
+                        <!-- 卡片容器 -->
+                        <div class="card h-100">
+                            <!-- 标题 -->
+                            <h4 class="card-header">课程：</h4>
+                            <!-- 摘要 -->
+                            <div class="card-body">
+                                <p class="card-text">课程编号：{{targetfile.courseNum }}</p>
+                            </div>
+                            <!-- 摘要 -->
+                            <div class="card-body">
+                                <p class="card-text">授课教师：{{ targetfile.teacherName }}</p>
+                            </div>
+                            <!-- 注脚 -->
+                            <div class="card-footer">
+                                <form action='../joincourse/' method="GET">
+                                    {% csrf_token %}
+                                        
+                                    <input type='hidden' name='ID' value={{targetfile.id}}>
+                                    <input type='submit' class="btn btn-primary" value='加入' name ='join'>
+                                </form>
+                            </div>
+                        </div>
+                    </div>   
+                {% endfor %}
+            </ul>
+            <hr>        
+        {% else %}
+            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的课程。</h4>
+            <hr>
+        {% endif %}
+    {% endif %}
+    {% else %}
+        <form action = "" method = "POST">
+            {% csrf_token %}
+            {{ ERROR }}
+            <div class="container">
+                <div class="form row">
+                        <div class="col-md-12">
+                                <h3 style="text-align: center;">Login to your account</h3>
+                                <!-- 账号 -->
+                                <div class="form-group">
+                                    <i class="fa fa-user fa-lg"></i>
+                                    <input class="form-control required" type="text" placeholder="请输入用户名" name="username" autofocus="autofocus">
+                                </div>
+                                
+                                <!-- 密码 -->
+                                <div class="form-group">
+                                    <i class="fa fa-lock fa-lg"></i>
+                                    <input class="form-control required" type="password" placeholder="请输入密码" name="password">
+                                </div>
+                                
+                                <!-- 验证码 -->
+                                <div class="form-group">
+                                    {{ loginform.VerificationCode }}
+                                    {{ loginform.errors.VerificationCode }}
+                                </div>
+                                                    
+                                <!-- 提交按钮 -->
+                                <div class="form-group">
+                                    <button type = "submit" class = "btn btn-primary btn-block btn-success">登录</button>   
+                                </div>
+                                <div class="form-group">
+                                    <a href="{% url 'Login:Register' %}" role="button" class="btn btn-link pull-right " class="img-circle" style="font-size: large;">No account?</a>
+                                </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

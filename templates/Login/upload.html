@@ -1,0 +1,127 @@
+<!-- extends表明此页面继承自 baseHome.html 文件 -->
+{% extends "baseHome.html" %}
+{% load staticfiles %}
+
+<!-- 写入 baseHome.html 中定义的 title -->
+{% block title %}
+    上传作业
+{% endblock title %}
+
+<!--加入滚动条-->
+<div style="position:absolute; height:400px; overflow:auto">
+</div>
+
+{% block head %}
+    <link href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件上传</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+{% endblock head %}
+
+{% block style %}
+    <style type="text/css">
+        body{
+            font-size: 16px;
+        }
+        .form{
+            background: rgba(255,255,255,0.2);
+            width: 400px;
+            margin: 100px auto;
+        }
+        #login_form{
+            display: block;
+        }
+        .fa{
+            display: inline-block;
+            top: 30px;
+            left: 6px;
+            position: relative;
+            color: #ccc;
+        }
+        input[type="text"],input[type="password"]{
+            padding-left: 30px;
+        }
+    </style>
+{% endblock style %}
+
+<!-- 写入 baseHome.html 中定义的 content -->
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+    {% if user.is_authenticated %}
+    <h1>文件上传</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="custom-file">
+            <p><input type="file" name="tttt" id="customFile" ></p>
+            <label class="custom-file-label" for="customFile">选择文件</label>
+        </div>
+        
+        <input role="button" class="btn btn-outline-primary" type="submit" value="ok">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                <script type="text/javascript">
+                    function feedback() {
+                        layer.open({
+                            title: "来自本网页的提示",
+                            content: "上传成功",
+                            end : function() {
+                                location.href='{% url "Login:coursedetail" uf.homework.courseNum %}'
+                            },
+                    
+                        })
+                    }
+                    window.onload = feedback;
+                </script>
+            {% endif %}
+            {% endfor %} 
+        </ul>
+        {% endif %}
+    </form>
+    {% else %}
+        <form action = "" method = "POST">
+            {% csrf_token %}
+            {{ ERROR }}
+            <div class="container">
+                <div class="form row">
+                        <div class="col-md-12">
+                                <h3 style="text-align: center;">Login to your account</h3>
+                                <!-- 账号 -->
+                                <div class="form-group">
+                                    <i class="fa fa-user fa-lg"></i>
+                                    <input class="form-control required" type="text" placeholder="请输入用户名" name="username" autofocus="autofocus">
+                                </div>
+                                
+                                <!-- 密码 -->
+                                <div class="form-group">
+                                    <i class="fa fa-lock fa-lg"></i>
+                                    <input class="form-control required" type="password" placeholder="请输入密码" name="password">
+                                </div>
+                                
+                                <!-- 验证码 -->
+                                <div class="form-group">
+                                    {{ loginform.VerificationCode }}
+                                    {{ loginform.errors.VerificationCode }}
+                                </div>
+                                                    
+                                <!-- 提交按钮 -->
+                                <div class="form-group">
+                                    <button type = "submit" class = "btn btn-primary btn-block btn-success">登录</button>   
+                                </div>
+                                <div class="form-group">
+                                    <a href="{% url 'Login:Register' %}" role="button" class="btn btn-link pull-right " class="img-circle" style="font-size: large;">No account?</a>
+                                </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

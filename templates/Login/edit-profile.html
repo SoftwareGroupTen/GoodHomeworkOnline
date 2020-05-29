@@ -1,0 +1,87 @@
+<!-- extends表明此页面继承自 baseHome.html 文件 -->
+{% extends "baseHome.html" %}
+{% load staticfiles %}
+
+<!-- 写入 baseHome.html 中定义的 title -->
+{% block title %}
+    编辑信息
+{% endblock title %}
+
+<!--加入滚动条-->
+<div style="position:absolute; height:400px; overflow:auto">
+</div>
+
+<!-- 写入 baseHome.html 中定义的 content -->
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>编辑信息</h1>
+            <!--<a class="nav-link" href = "{% url 'Login:PAGE' %}">回到主页</a>-->
+            <!--<a class="nav-link" href="{% url 'Login:usercenter' %}">个人中心</a>-->
+            <!--<a class="nav-link" href = "{% url 'Login:editprofile' %}">编辑个人信息</a>-->
+            <a href="{% url 'Login:changepassword' %}" class="btn btn-primary">修改密码</a>
+            <!--<a class="nav-link" href = "{% url 'Login:logOut' %}">登出</a>-->
+                {{ editprofileform.errors }}
+            <form action="" method = "POST">
+                {% csrf_token %}
+                
+                <!-- 用户名 -->
+                <div class="form-group col-md-4">
+                    <div class="col-6 alert alert-info">用户名:</div>
+                    <!--<label for="id_username">用户名:</label>-->
+                    
+                    <input type="text" class="form-control" name="username" value="{{USER.username}}" maxlength="150" required id="id_username">
+                    <!--<span class="helptext">150个字符或者更少。仅可包含字母，数字和@/./+/-/_符号。</span>-->
+                </div>
+                <!--
+                <p>
+                    <label for="id_username">用户名：</label>
+                    <input type="text" name="username" value="{{USER.username}}" maxlength="150" required id="id_username" />
+                    <span class="helptext">必填。150个字符或者更少。包含字母，数字和仅有的@/./+/-/_符号。</span>
+                </p>
+                -->
+                
+                <!-- 邮箱 -->
+                <div class="form-group col-md-4">
+                    <div class="col-9 alert alert-info">电子邮件地址:</div>
+                    <!--<label for="id_email">电子邮件地址:</label> -->
+                    
+                    <input type="email" class="form-control" name="email" value="{{USER.email}}" maxlength="254" id="id_email">
+                </div>
+                <!--
+                <p>
+                    <label for="id_email">电子邮件地址:</label>
+                    <input type="email" name="email" value="{{USER.email}}" maxlength="254" id="id_email">
+                </p>
+                -->
+
+                <div class="form-group col-md-4">
+                    <div class="col-5 alert alert-info">昵称:</div>
+                    <!--<label for="id_nickname">昵称:</label>-->
+                     
+                    <input type="text" class="form-control" name="nickname" maxlength="50" id="id_nickname" value="{{USER.normaluserform.nickname}}" />
+                </div>
+                <!--
+                <p>
+                    <label for="id_nickname">昵称:</label> 
+                    <input type="text" name="nickname" maxlength="50" id="id_nickname" value="{{USER.normaluserform.nickname}}" />
+                </p>
+                -->
+                
+                <div>
+                    <div><br></div>
+                    <div class="col-3 alert alert-info">请选择身份:</div>
+                    <!--<label for="id_Identity">身份:</label> -->
+                    
+                    <input type = "radio" name = "Identity" value = "学生">学生
+                    <input type = "radio" name = "Identity" value = "助教">助教
+                    <input type = "radio" name = "Identity" value = "老师">老师
+                </div>
+                <button type = "submit" class="btn btn-primary">提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

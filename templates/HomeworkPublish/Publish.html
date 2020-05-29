@@ -1,0 +1,89 @@
+<!-- extends表明此页面继承自 baseReg.html 文件 -->
+{% extends "baseHome.html" %}
+{% load staticfiles %}
+
+<!-- 写入 baseHome.html 中定义的 title -->
+{% block title %}
+    作业发布
+{% endblock title %}
+
+<!--加入滚动条-->
+<div style="position:absolute; height:400px; overflow:auto">
+</div>
+
+<!-- 写入 baseHome.html 中定义的 content -->
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <!--作业内容-->
+                <div class="form-group col-md-4">
+                    <label for="Homework_title">作业标题:</label>
+                    <br/>
+                    <input type="text" class="form-control" id="Homework_title" name="Homework_title">
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="Homework_text">作业内容:</label>
+                    <br/>
+                    <textarea type="text" class="form-control" id="Homework_text" name="Homework_text" rows="10"></textarea>
+                </div>
+                
+                <div class="form-group col-md-4">
+                    <label for="deadline_date">截止日期:</label>
+                    <br/>
+                    <input type="date" class="form-control" id="deadline_date" name="deadline_date">
+                </div>
+                
+                <div class="form-group col-md-4">
+                    <label for="deadline_time">截止时间:</label>
+                    <br/>
+                    <input type="time" class="form-control" id="deadline_time" name="deadline_time">
+                </div>
+
+                <!--提交按钮-->
+                <div class="form-group col-md-4">
+                    <button type="submit" class="btn btn-primary">完成</button>
+                </div>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                        <script type="text/javascript">
+                            function feedback() {
+                                layer.open({
+                                    title: "来自本网页的提示",
+                                    content: "发布成功",
+                                    end : function() {
+                                        location.href='{% url "Login:coursedetail" hw.courseNum %}'
+                                    },
+                    
+                                })
+                            }
+                            window.onload = feedback;
+                        </script>
+                    {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <script type="text/javascript">
+                            function feedback() {
+                                layer.open({
+                                    title: "来自本网页的提示",
+                                    content: "作业内容有误，请重新填写",
+                                    end : function() {
+                                        location.href=document.referrer
+                                    },
+                    
+                                })
+                            }
+                            window.onload = feedback;
+                        </script>
+                    {% endif %}
+                    {% endfor %} 
+                </ul>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>      
+{% endblock content %}

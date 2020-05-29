@@ -1,0 +1,43 @@
+<!-- 载入静态文件 -->
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<!-- 网站主语言 -->
+<html lang="zh-cn">
+
+<head>
+    <!-- 网站采用的字符编码 -->
+    <meta charset="utf-8">
+    <!-- 预留网站标题的位置 -->
+    <title>{% block title %}{% endblock %}</title>
+    <!-- 引入bootstrap的css文件 -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon"type="image/x-icon" href="/static/images/bitbug_favicon.ico" media="screen" />
+    {% block head %}{% endblock head %}
+
+    {% block style %}{% endblock style %}
+
+    {% block js %}{% endblock js %}
+</head>
+
+<body background="/static/images/bg.jpg" style=" background-repeat:no-repeat ;background-size:100% 100%;
+background-attachment: fixed;">
+    <!-- 引入导航栏 -->
+    {% include 'headerHome.html' %}
+
+    
+    {% block content %}{% endblock content %}
+
+    <!-- 引入注脚 -->
+    {% include 'footer.html' %}
+    
+    <!-- bootstrap.js 依赖 jquery.js 和popper.js，因此在这里引入 -->
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <script src="{% static 'popper/popper.js' %}"></script>    
+    <!-- 引入bootstrap的js文件 -->
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- 引入layer.js -->
+    <script src="{% static 'layer/layer.js' %}"></script>
+</body>
+
+</html>

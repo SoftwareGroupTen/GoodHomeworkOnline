@@ -3,6 +3,8 @@
 * 利用到了Django框架
 * 目的为了更加便利在线老师与学生之间的交流
 ## 需要安装的模块有
+* python3.7
+* django2.2
 * django-simple-captcha
 * django-notifications-hq
 * markdown
